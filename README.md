@@ -1,6 +1,7 @@
 # nixos-zoo
 
-i3 configuration files for NixOS on zfs and NixOS recipes
+This repo contains configuration files for my personal machine with NixOS on encrypted zfs and NixOS/Nix* ecosystem recipes.
+
 
 ## Contents
 
