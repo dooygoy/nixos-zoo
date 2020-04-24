@@ -4,7 +4,7 @@ i3 configuration files for NixOS on zfs and NixOS recipes
 
 ## Contents
 
-* [Previews](#latest-previews)
+* [Preview](#preview)
 * [Quick-start](#quick-start)
 * [Default applications](#default-applications)
 * [NixOS recipes](#nixos-recipes)
@@ -18,7 +18,7 @@ Personal setup:
 - **Editor**:    kanouke
 - **Browser**:   qutebrowser
 
-## Latest Preview
+## Preview
 
 ![Screenshot](screenshot.png)
 
