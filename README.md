@@ -1,10 +1,10 @@
 # NixOS-zoo
 
-This repo is a work in process, containing configuration files for my 
-personal machine with NixOS unstable on encrypted zfs. But more, it will also contain 
-educational NixOS/Nix* ecosystem recipes, documented workflows and notes in 
-form of learning snippets. Hopefully this will evolve into *packaging* 
-nixpkgs tutorials,interacting with Hydra/NixOps and playing 
+This repo is a work in process, containing configuration files for my
+personal machine with NixOS unstable on encrypted zfs. But more, it will also contain
+educational NixOS/Nix* ecosystem recipes, documented workflows and notes in
+form of learning snippets. Hopefully this will evolve into *packaging*
+nixpkgs tutorials,interacting with Hydra/NixOps and playing
 with *nix* expression language.
 
 
@@ -33,9 +33,10 @@ with *nix* expression language.
 ![Screenshot](screenshot.png)
 
 ### TODO
- 
-- setup jack with Haskell Tidal
-- 
+
+- [ ] setup jack with Haskell Tidal
+- [ ] nixpkgs!
+- [ ] home-manager workflows
 
 ### NixOS workflows
 
@@ -69,7 +70,3 @@ git add README.md
 git commit -m "first commit"
 git remote add origin https://github.com/username/nixos-zoo.git
 ```
-
-
-
-
