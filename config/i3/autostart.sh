@@ -9,4 +9,4 @@ nm-applet &
 parcellite &
 pasystray &
 xautolock -locker "i3lock --color '#332233'"  -time 60 -detectsleep &
-redshift -l -36.84853:174.76349 & # auckland, nz
+redshift -l -36.84853:174.76349 &

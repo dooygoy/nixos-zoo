@@ -3,7 +3,11 @@
 {
   services.xserver = {
     enable = true;
-    libinput.enable = true;
+    libinput = {
+      enable = true;
+      disableWhileTyping = true;
+      naturalScrolling = true;
+      }
     autorun = true;
     desktopManager.xterm.enable = false;
     windowManager.i3 = {
