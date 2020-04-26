@@ -45,6 +45,7 @@ with *nix* expression language.
 * Syncronizing NixOS With Git
   * [can I move /etc/nixos to my dotfiles and symlink it back to
 /etc/nixos/?](https://discourse.nixos.org/t/can-i-move-etc-nixos-to-my-dotfiles-and-symlink-it-back-to-etc-nixos/4833/13)
+
 > There's no need to symlink - `/etc/nixos/configuration.nix` is just the
 default location, and you can change it. When you run nixos-rebuild, it looks up
 the value of "nixos-config" in the NIX_PATH environment variable, so you can
@@ -86,8 +87,6 @@ default `XDG` setting conventions? It might be good to also have *crosslinks* to
 relevant module options.
 
 Labels: 0.kind: bug, 6.topic: nixos, 9.needs: documentation
-
-* documentation request fhs
 
 As always I first go to ArchWiki since I find the request a bit vague, need to
 explore **FHS Conventions** in *general*.
