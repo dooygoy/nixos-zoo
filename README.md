@@ -79,7 +79,7 @@ git commit -m "first commit"
 git remote add origin https://github.com/username/nixos-zoo.git
 ```
 
-### Documentation request: FHS(#documentation-request-fhs)
+### Documentation Request FHS(#documentation-request-fhs)
 
 Nix needs documentation for it's peculiar *FHS conventions*.
 For example: the layout of `/run/current-system` or `/run/current-system/sw`,
