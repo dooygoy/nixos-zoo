@@ -7,7 +7,7 @@
       enable = true;
       disableWhileTyping = true;
       naturalScrolling = true;
-      }
+      };
     autorun = true;
     desktopManager.xterm.enable = false;
     windowManager.i3 = {
@@ -38,8 +38,8 @@
       noDesktop = true;
     };
 
-    xkbOptions = "caps:escape";
-    xkbVariant = "workman";
+    xkbOptions = "caps:escape, grp:rctrl_rshift_toggle";
+    xkbVariant = "workman,";
   };
 
   fonts = {
