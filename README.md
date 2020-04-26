@@ -49,10 +49,12 @@ with *nix* expression language.
 default location, and you can change it. When you run nixos-rebuild, it looks up
 the value of "nixos-config" in the NIX_PATH environment variable, so you can
 point that wherever you want. Example (as root):
+
 ```
 export NIX_PATH="nixos-config=/path/to/configuration.nix"
 nixos-rebuild switch
 ```
+
 Note: you could fetch your coniguration while still in  the installer and
 install it all at once.
 
@@ -61,7 +63,9 @@ NIX_PATH, I just keep /etc/nixos directly as a git repo owned by my user. When
 you boot up on the very first install, you can install git with nix-env, clone
 the repo as root, build the OS, and then at a later point chown /etc/nixos to
 yourself once your user exists.
-  * Initializing a git repo:
+
+* Initializing a git repo:
+
 ```
 # create a repository (example: nixos-zoo) on github.com without a README
 
@@ -74,6 +78,7 @@ git remote add origin https://github.com/username/nixos-zoo.git
 ```
 
 * Documentation request: FHS(#documentation-request-fhs)
+
 Nix needs documentation for it's peculiar *FHS conventions*.
 For example: the layout of `/run/current-system` or `/run/current-system/sw`,
 how it relates to `XDG_DATA_DIRS`, etc. So also information explaining NixOS's
