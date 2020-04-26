@@ -15,7 +15,7 @@ with *nix* expression language.
 * [Default applications](#default-applications)
 * [NixOS workflows](#nixos-workflows)
   * [Syncronizing NixOS With Git](#syncronizing-nixos-with-git)
-  * [Documentation request fhs](#documentation-request-fhs)
+  * [Documentation Request FHS](#documentation-request-fhs)
 
 ### Default applications:
 
@@ -79,7 +79,7 @@ git commit -m "first commit"
 git remote add origin https://github.com/username/nixos-zoo.git
 ```
 
-### Documentation Request FHS(#documentation-request-fhs)
+### Documentation Request FHS
 
 Nix needs documentation for it's peculiar *FHS conventions*.
 For example: the layout of `/run/current-system` or `/run/current-system/sw`,
