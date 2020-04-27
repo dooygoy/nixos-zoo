@@ -6,7 +6,6 @@
     libinput = {
       enable = true;
       disableWhileTyping = true;
-      naturalScrolling = true;
       };
     autorun = true;
     desktopManager.xterm.enable = false;
@@ -37,9 +36,18 @@
       ];
       noDesktop = true;
     };
-
-    xkbOptions = "caps:escape, grp:rctrl_rshift_toggle";
+    layout = "us, hr";
+    xkbOptions = "caps:swapescape, grp:rctrl_rshift_toggle";
     xkbVariant = "workman,";
+  };
+  
+  programs.dconf.enable = true;
+  
+  services.picom = {
+    enable = true;
+    fade = true;
+    shadow = true;
+    inactiveOpacity = "0.9";
   };
 
   fonts = {
