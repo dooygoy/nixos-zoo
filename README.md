@@ -16,7 +16,7 @@ with *nix* expression language.
 * [NixOS workflows](#nixos-workflows)
   * [Syncronizing NixOS With Git](#syncronizing-nixos-with-git)
   * [Documentation Request FHS](#documentation-request-fhs)
-
+    * [FHS exploration continues](#fhs-exploration)
 ### Default applications:
 
 - **OS**:            NixOS unstable
@@ -211,3 +211,148 @@ happens that these dependencies are (or can be) in the system but not there
 But the nice part is that the solution is simple when you look at the derivation
 and the seemingly difficult problem is solved in an elegant nix way, again by
 using just nix expression language.
+
+### FHS exploration
+
+Linux configuration:
+
+- /etc
+- /usr/share
+- /opt
+- $(HOME)
+- $(XDG_CONFIG_HOME)
+- $(XDG_CACHE_HOME)
+- $(XDG_DATA_HOME)
+
+You don't have that one singular place, it's usually
+all over the system, and we haven't even looked inside these places.
+
+- JSON?
+- SQLite?
+- Key/Value Pair?
+
+I go to youtube and search for a nice video on XDG, who knows, maybe there are
+some pretty visuals too? So I stumble upon Wolfgang's Channel, there are flashy retro lights and
+the movie Hacker vibe. He talks about managing dotfiles and introduces GNU Stow,
+which seems like an alternative to *Home-manager* the popular tool for managing
+NixOS configurations. As far as I know Home-manager is capable to reproduce the
+entire NixOS tree, not just user dotfile, I wonder if that is even possible with
+GNU Stow?
+
+> "The approach used by Stow is to install each package into its own tree, then
+> use symbolic links to make it appear as though the files are installed in the
+> common tree."
+
+[Reading this interesting hacker news answer](https://news.ycombinator.com/item?id=11071754)
+on managing dotfiles by initializing a git repo for the whole home.
+
+```
+git init --bare $HOME/.myconf
+alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
+config config status.showUntrackedFiles no
+
+# where my ~/.myconf directory is a git bare repository. Then any file within the
+home folder can be versioned with normal commands like:
+
+config status
+config add .vimrc
+config commit -m "Add vimrc"
+config add .config/redshift.conf
+config commit -m "Add redshift config"
+config push
+```
+But let's move on, I read a question on NixOS discourse [custom gsettings schema
+being ignored in
+xdg-data-dirs](https://discourse.nixos.org/t/custom-gsettings-schema-being-ignored-in-xdg-data-dirs/3449/2)
+There is our little xdg friend again! Seems like a NixOS user **worldofpeace**
+knows something about xdg issuse since he replies: "If you have any other issues
+pacakaging cinnamon I could be a great assistance to you on the GTK side of
+things. (available of freenode as worldofpeace and of course here)."
+That is really nice, and I noticed too worldofpeace name of NixOS channel.
+Worldofpeace seems like a very happy person too :) There is our person of
+contact maybe.
+
+I also see worldofpeace is working on
+gnome documentation here: [doc: add GNOME #43150](https://github.com/NixOS/nixpk
+gs/pull/43150). where a comment from **jtojnar** tells this should be enough:
+```
+xdg.icons.enable = true;
+environment.systemPackages = [ pkgs.gnome3.adwaita-icon-theme ];
+```
+> I really need to write a chapter on creating a **baseline freedesktop system**
+though, as many NixOS users run some kind of bare-bones WM.
+
+cdepillabout adds:
+> Yeah, this would be really nice. I run XMonad, but *not configured* from
+`/etc/nixos/configuration.nix`. It would be great to have a guide as to how all
+the freedesktop stuff is supposed to work in nix.
+
+which brings me to my own NixOS setup. I did put the icon themes into the
+separate `xserver.nix` file that is imported into `configuration.nix` but I am
+also not really happy that I am setting up my theme by using `lxappearance`. I
+am still do not know how to write the `theme-my-desktop.nix` where xdg, icons,
+mouse, themes, gtk-engines etc. could be declared. They are merely in my
+packages list, and no environment variables are defined. Also I am using i3wm
+and yet I did try to setup XMonad since I am learning Haskell too
+and failed several times. The NixOS wiki was not enough, at least not for me,
+there were changes and the wiki has not been updated which brings us to
+another task:
+
+- [ ] Update NixOS wiki so that other users don't face the same problems you
+face and plus, you learn by sharing your expressions too!
+
+Following the gnome thread I see a wonderful rendered document by jtojnar on
+packaging GNOME applications on NixOS at
+https://jtojnar.github.io/dumpling/#sec-language-gnome
+
+> Programs in the GNOME univrse are written in various languages but they all
+use GOject-based libraires like GLib, GTK or GStreamer. These libraries are
+often modular, relying on looking into certain directories to find their
+modules. However, due to Nix's specific file system organization, this will fail
+without our intervention. Fortunately, the libraries usually allow overriding
+the directories through environment variables, either natively or thanks to a
+patch in nixpkgs. Wrapping the executables to ensure correct paths are available
+to the application constitutes a significant part of packaging a modern desktop
+application. In this section, we will describe various modules needed by such
+applications, environment variables needed to make the modules load, and finally
+a script that will do the work for us.
+
+But only after scrolling a bit up do I realize that this document is just one
+part of the extensive [Nixpkgs Users and Contributors
+Guide](https://nixos.org/nixpkgs/manual/)
+
+Next I stumble upon this massive thread on NixOS on creating a [User-friendly
+NixOS distro?](https://discourse.nixos.org/t/user-friendly-nixos-distro/1348/13)
+and this is something I have been thinking about more and more. NixOS seems as
+an excellent ground for creating Linux distributions since all configuration can
+be declared as nix language expression. Something similar is
+[arcolinux](www.arcolinux.info) which uses minimalistic Arch Linux as a ground
+for various installable *configurations* of desktop environments and wm
+environments. Some of them are XFCE, KDE, but also i3, bspwm, xmonad, qtile etc.
+which are super interesting *productive oriented* setups with tiling managers
+instead of our usual *bloated* DE's. Recently I showed the i3wm tiling manager
+to some people and they love the automatic placement of windows, expecially the
+cute i3-gaps fork which can make *gaps* between windows. Arco Linux has several
+github repositories which contain necessary configuration files needed for a
+*tinkerless* tiling manager experience while all the necessary freedesktop
+configuration is configured with it as well. This is something what seems to be
+missing in NixOS space and that is unfortunate because it would be wonderful if
+we could for example just pick our configurations of preferred environments and
+then just download the configs and just roll with our new wm.
+
+Now, there are
+several reproducible NixOS setups floating in github space but they still need
+manual tinkering to properly set them up and I have myself failed several times
+in setting them, so to say, they often do not really work out of the box, at
+least not for non-experts. Maybe you will have more luck in setting them up. I
+recommend the beautiful NixOS Xmonad setup at
+https://github.com/karetsu/xmonad-aloysius and super pretty **starlight-os** at
+https://github.com/isaacwhanson/starlight-os . These are all beautiful attempts
+to bring this experience to end users, and a great ground for learning. I myself
+have managed to setup my i3 using as a reference the
+https://github.com/utdemir/dotfiles github repo after failing to just reproduce
+the setup by following instructions. My whole pain points are described in
+thi [github issue](https://github.com/utdemir/dotfiles/issues/29)
+and utdemir was kind enough to thank and to offer some tips too. It all began
+with my configuration not picking up my "workman" layout and then evolved into
+several more issuse. These are all detailed in the same manner as these posts.
