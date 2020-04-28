@@ -2,6 +2,11 @@ set $mod Mod4
 
 font pango:monospace 8
 
+set $coloract "#6a8e7a"
+set $colorin "#3c5045"
+set_from_resource $white i3wm.color15 "#fefbec"
+set_from_resource $split i3wm.color10 "#9E664B0"
+
 #Needed for i3-gaps
 #hide_edge_borders both
 for_window [class="^.*"] border pixel 2 
@@ -136,7 +141,18 @@ bar {
 }
 
 new_window 1pixel
-client.focused #4c7899 #285577 #ffffff #2e9ef4 #dd0000
+#client.focused #4c7899 #285577 #ffffff #2e9ef4 #dd0000
 
+# class                 border    backg.    text    indctr  child_border
+client.focused          $coloract $coloract $white  $split  $coloract   
+client.focused_inactive $coloract $coloract $white  $split  $coloract 
+client.unfocused        $colorin  $colorin  #888888 $split  $colorin
+client.urgent           #2f343a   #900000   $white  #900000 #900000
+client.placeholder      #000000   #0c0c0c   #white  #000000 #0c0c0c
+
+client.background #ffffff
+
+bindsym Print exec scrot '%Y-%m-%d-%s_screenshot_$wx$h.jpg' -d 4 -e 'mv $f ~/pics/'
 exec --no-startup-id xset s off -dpms
 exec --no-startup-id sh ~/.config/i3/autostart.sh
+
