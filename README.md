@@ -17,6 +17,8 @@ with *nix* expression language.
   * [Syncronizing NixOS With Git](#syncronizing-nixos-with-git)
   * [Documentation Request FHS](#documentation-request-fhs)
     * [FHS exploration continues](#fhs-exploration)
+  * [How to package nix](#how-to-package-nix)
+    * [Nix Pills](#nix-pills)
 ### Default applications:
 
 - **OS**:            NixOS unstable
@@ -25,7 +27,7 @@ with *nix* expression language.
 - **Shell**:         Zsh
 - **File explorer**: Ranger
 - **Launcher**:      Rofi
-- **Editor**:        Kanouke/Emacs
+- **Editor**:        Kakoune/Emacs
 - **Browser**:       Qutebrowser
 - **PDF viewer**:    Zathura
 
@@ -356,3 +358,152 @@ thi [github issue](https://github.com/utdemir/dotfiles/issues/29)
 and utdemir was kind enough to thank and to offer some tips too. It all began
 with my configuration not picking up my "workman" layout and then evolved into
 several more issuse. These are all detailed in the same manner as these posts.
+
+### How to package nix
+
+Let's ask google how to package nix packages.
+```
+> www.google.com -> "how to package nix"
+1. Packaging/Tutorial - NixOS Wiki
+2. Nixpkgs/Create and debug packages - NixOS Wiki
+```
+Following the first link we see the quote
+> The more you read, the faster you'll be able to build your package.
+NOTE1: If you have time, read Nix Pills first.
+
+Great so I have to read Nix Pills first.
+
+### Nix Pills
+
+Nix Pills provides a tutorial introduction into the Nix package manager and
+Nixpkgs package collection, in the form of short chapters called 'pills' which
+aim to complement the existing explanations from the more formal documents.
+
+The basic problem with package managers is that they mutate the global state, or
+seems to me some part of a state in order to bind together many dependencies
+that are needed to build programs. These dependencies often have dependencies of
+their own or many versions since programs are build incrementally so our target
+program might collapse because dependencies cannot resolve their differences in
+a *rational* manner. Each target program takes some space so how do you put next
+to it the same program that has a different version number. Seems to me a single
+program assumes the whole environment and is not smart enough to play along the
+same version of itself in the same system. These programs seem very *static* and
+*lifeless* in nature since they cannot resolve such issues. If I want to run two
+different instances of some program I also have to make sure their libraries of
+functions do not collide in our ecosystem. So what do we do? We chat them of
+course, we set up *virtual* places, or containers that define the environment
+the programs need to operate faithfully meaning we would need to set up two
+different containers for two of our separate programs including all the
+necessary libraries. Ok so now we have our ecosystem and two virtual containers
+that are like an image of our own but with slightly different settings. Then we
+can play with two programs as if they were peacefully next to each other. But
+now we have an overlay of cruft because we have to somehow implement containers
+and monitor what is happening on two different spaces. 
+> Nix makes no assumptions about the global state of the system. In Nix there is
+the notion of a *derivation* rather than a package.
+
+Googling the notion of derivation we stumble upon an interesting wiki article on
+[parse tree](https://en.wikipedia.org/wiki/Parse_tree)
+> A **parse tree** or *parsing tree** or **derivation tree** or **concrete
+syntax tree** is an ordered, rooted tree that represents the syntactic structure
+of a string according to some context-free grammar. Parse trees are usually
+constructed based on either the constituency relation of constituency grammars
+or dependency relation of dependency grammars. 
+
+Now this term [Dependency
+grammar](https://en.wikipedia.org/wiki/Dependency_grammar) makes us think of
+program dependencies and we see that these are theories that are based on the
+*dependency relation* (as opposed to the *constituency relation* of phrase
+structure).
+> Dependency is the notion that linguistic units, e.g. words, are connected to
+each other by directed links. The (finite) verb is taken to be the structural
+center of clause structure. All other syntactic units (words) are eiether
+directly or indirectly connected to the verb in terms of the directed links,
+which are called **dependencies**.
+
+Derivations/packages are stored in the Nix store as follows:
+`/nix/store/hash-name` where the hash uniquely identifies the derivation.
+so each program in the nix store is built by specific versions of its
+dependencies and that is all defined in that hash. This actually means we could
+have two versions of our programs which require different dependencies and they
+will not collide since they have a *unique* name of their own, which is this
+hash number we see in the nix store. Some programs do peek out and look for
+global values so we need to *wrap* them up and setup the necessary environment,
+so to say guide the program when it looks for things. This guiding needs to be
+defined within our nix derivation when we first setup the program. So basically
+there is no notion of upgrade/downgrade of programs in place. Each *upgrade* is
+a new program in place with newly defined environment. 
+
+Nix also has a database. It's stored under `/nix/var/nix/db` as a sqlite
+database that keeps track of the dependencies between derivations. So Nix
+expressions are used to describe packages and how to build them and Nixpkgs is
+the repository containing all of the expressions. So basically the whole system
+is defined with nix expressions which is kinda cool. If we ask
+```nix
+nix-store -q --references `which bash`
+```
+we get runtime dependencies and if we ask
+```nix
+nix-store -q --referrers `which bash`
+```
+we get reverse dependencies meaning the bash and the whole user environment that
+depends on our bash. This roughly means our user environment is itself defined
+with that specific version of bash. It is like we can inspect in both ways our
+flow of dependencies seeing the ecosystem itself that is defined by specific
+programs and seeing *runtime* specific dependencies that are needed for our bash
+to run. 
+```nix
+nix-store -qR `which bash`
+```
+shows us a list of all dependencies but what is the difference between running
+`-q --references` and `-qR`? `-qR` shows two more programs that are apparently
+needed for a full reproducible environment on a different machine. This seems
+like there are some systems related dependencies that also need to be synced if
+we want our program to be *totally* reproducible.
+```
+nix-store -q --tree `which bash`
+```
+shows a pretty tree structure where we can see relations of dependencies.
+
+Further, our list of programs in nix store is synced with nix packages that can
+be updated through nix *channels*. Running `nix-channel --update` will run the
+update same as `apt-get update` on ubuntu.
+
+Some other commands:
+
+```
+ubuntu -> sudo apt-get install firefox
+
+nixos -> add "firefox" to /etc/nixos/configuration.nix and run 
+           sudo nixos-rebuild switch
+
+# install a package for a specific user
+
+ubuntu -> not possible
+
+nixos -> add "firefox" to  users.users.username.packages = with pkgs; [firefox ];
+in /etc/nixos/configuration.nix and run sudo nixos-rebuild switch
+
+# install a service
+
+ubuntu -> sudo apt install openssh-server
+nixos -> add to /etc/nixos/configuration.nix
+         services.openssh.enable = true;
+```
+See many more on [ubuntu/nixos commands](https://nixos.wiki/wiki/Cheatsheet)
+
+Finally we get to the nix language! Launch nix repl!
+
+```nix
+> 1 + 1
+2
+> 6 / 3
+2
+```
+If you do not put space between the operator and the operands nix might
+understand division as a file path. Write `6/2` and see for yourself. Nix is
+functional and lazy, similar to Haskell. In Haskell we would write:
+`6 / 2` or `div 6 2` and in nix `6 / 2` or `builtins.div 6 3`. Strings are
+`"strings"` or `''strings''`
+
+
