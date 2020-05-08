@@ -1,0 +1,6 @@
+[Default Applications]
+x-scheme-handler/magnet=userapp-transmission-gtk-RBAPJ0.desktop
+
+[Added Associations]
+x-scheme-handler/magnet=userapp-transmission-gtk-RBAPJ0.desktop;
+video/x-matroska=vlc.desktop;
