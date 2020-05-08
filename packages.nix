@@ -2,8 +2,10 @@
 
 {
   environment.systemPackages = with pkgs; [
-   
-   wget vim emacs curl tmux kakoune
+   unetbootin
+   leiningen openjdk11 cmake obs-studio    
+   vscodium vscode
+   wget vim emacs curl tmux kakoune kak-lsp
    sshfs bandwhich cookiecutter starship
    rclone zsh zsh-syntax-highlighting
    weechat watch up units tree tokei tig
@@ -26,10 +28,12 @@
    sbcl gnupg hdparm dhall nmap transmission-gtk
    vlc zathura firefox unzip unrar gparted
    cabal2nix cabal-install haskellPackages.stack
-   ghc
-
+   ghc ripgrep fd clang coreutils ghcid
+   stylish-haskell  
+   blender hlint     
    flat-remix-icon-theme nordic gsettings-desktop-schemas
    
+   figlet cowsay
    nix-prefetch-scripts patchelf nix-top niv
    nix-zsh-completions nixfmt
      

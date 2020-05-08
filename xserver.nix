@@ -46,8 +46,24 @@
   services.picom = {
     enable = true;
     fade = true;
+    fadeDelta = 8;
+    fadeSteps = [ "0.056" "0.06" ];
     shadow = true;
-    inactiveOpacity = "0.9";
+    shadowOpacity = "0.36";
+    inactiveOpacity = "0.8";
+    activeOpacity = "0.92";
+    opacityRules = [
+      "100:class_g ?= 'feh'"
+      "100:class_g *?= 'Firefox'"
+      "100:class_g *?= 'Nightly'"
+      "92:class_g ?= 'Rofi'"
+     # "100:class_g ?= 'Zathura'"
+      "100:class_g ?= 'Gimp'"
+      "100:class_g ?= 'Inkscape'"
+      "100:class_g ?= 'Blender'"
+      "100:class_g ?= 'vlc'"
+      "100:class_g ?= 'mplayer'"
+     ];
   };
 
   fonts = {
@@ -57,13 +73,18 @@
       iosevka
       fira-code
       terminus_font
+      terminus_font_ttf
       liberation_ttf
       fira-mono
       source-code-pro
+      source-serif-pro
+      source-sans-pro
+      noto-fonts-emoji
+      font-awesome-ttf
     ];
     fontconfig = {
       subpixel.rgba = "none";
       subpixel.lcdfilter = "none";
+      };
     };
-  };
 }
